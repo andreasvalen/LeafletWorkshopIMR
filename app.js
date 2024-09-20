@@ -1,5 +1,5 @@
 // Initialize the map and set its view to Bergen, Norway
-var map = L.map('map').setView([60.400, 5.304], 16);
+var map = L.map('map').setView([60.399559, 5.30175], 16);
 
 // Add OpenStreetMap tile layer
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
