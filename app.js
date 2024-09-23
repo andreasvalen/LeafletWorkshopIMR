@@ -33,13 +33,6 @@ var circle = L.circle([60.399559, 5.30175], {
 marker.bindPopup("<b>Workshop Location</b><br>This is where the Leaflet workshop is held.").openPopup();
 circle.bindPopup("This circle represents area of uncertainty.");
 
-map.on('click', function(e) {
-    L.popup()
-     .setLatLng(e.latlng)
-     .setContent("You clicked the map at " + e.latlng.toString())
-     .openOn(map);
-});
-
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
@@ -56,6 +49,7 @@ var drawControl = new L.Control.Draw({
         marker: false  
     }
 });
+
 map.addControl(drawControl);
 
 map.on(L.Draw.Event.CREATED, function (event) {
