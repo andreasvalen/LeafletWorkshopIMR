@@ -1,16 +1,27 @@
-// Initialize the map and set its view to Bergen, Norway
 var map = L.map('map').setView([60.399559, 5.30175], 16);
 
-// Add OpenStreetMap tile layer
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+const GebcoWmsUrl = 'https://wms.gebco.net/mapserv?';
+
+L.tileLayer
+.wms(GebcoWmsUrl, {
+  layers: 'GEBCO_LATEST',
+  format: 'image/png',
+  attribution: '&copy; <a target="blank_" href="https://www.gebco.net/">GEBCO</a>',
+  opacity: 1,
+  maxZoom: 18
+})
+.addTo(map);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+attribution:
+  '&copy; <a target="blank_" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | EPSG:3857',
+opacity: 0.78,
+maxZoom: 18
 }).addTo(map);
 
-// Add a marker at the workshop location
+
 var marker = L.marker([60.399559, 5.30175]).addTo(map);
 
-// Add a circle around the workshop location
 var circle = L.circle([60.399559, 5.30175], {
     color: 'lightblue',
     fillColor: 'blue',
@@ -19,15 +30,35 @@ var circle = L.circle([60.399559, 5.30175], {
 }).addTo(map);
 
 
-// Bind popups to the shapes
 marker.bindPopup("<b>Workshop Location</b><br>This is where the Leaflet workshop is held.").openPopup();
 circle.bindPopup("This circle represents area of uncertainty.");
-polygon.bindPopup("This is a polygon near the workshop.");
 
-// Display a popup with coordinates when the map is clicked
 map.on('click', function(e) {
     L.popup()
      .setLatLng(e.latlng)
      .setContent("You clicked the map at " + e.latlng.toString())
      .openOn(map);
+});
+
+var drawnItems = new L.FeatureGroup();
+map.addLayer(drawnItems);
+
+var drawControl = new L.Control.Draw({
+    edit: {
+        featureGroup: drawnItems, 
+        remove: true              
+    },
+    draw: {
+        polygon: true, 
+        polyline: false, 
+        rectangle: false, 
+        circle: false, 
+        marker: false  
+    }
+});
+map.addControl(drawControl);
+
+map.on(L.Draw.Event.CREATED, function (event) {
+    var layer = event.layer;
+    drawnItems.addLayer(layer); 
 });
